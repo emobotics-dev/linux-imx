@@ -1041,7 +1041,9 @@ static int ili9881c_get_modes(struct drm_panel *panel,
 	 * TODO: Remove once all drm drivers call
 	 * drm_connector_set_orientation_from_panel()
 	 */
+#if 0 /* Don't support it on MaaXBoard-Mini */
 	drm_connector_set_panel_orientation(connector, ctx->orientation);
+#endif
 
 	return 1;
 }
@@ -1077,7 +1079,9 @@ static int ili9881c_dsi_probe(struct mipi_dsi_device *dsi)
 	drm_panel_init(&ctx->panel, &dsi->dev, &ili9881c_funcs,
 		       DRM_MODE_CONNECTOR_DSI);
 
-	ctx->power = devm_regulator_get(&dsi->dev, "power");
+	dev_info(&dsi->dev, "%s for panel %s\n", __func__, ctx->desc->name);
+
+	ctx->power = devm_gpiod_get(&dsi->dev, "pwn", GPIOD_OUT_LOW);
 	if (IS_ERR(ctx->power))
 		return dev_err_probe(&dsi->dev, PTR_ERR(ctx->power),
 				     "Couldn't get our power regulator\n");
@@ -1114,6 +1118,24 @@ static void ili9881c_dsi_remove(struct mipi_dsi_device *dsi)
 	mipi_dsi_detach(dsi);
 	drm_panel_remove(&ctx->panel);
 }
+
+/* MaaXBoard-Mini don't support: MIPI_DSI_MODE_VIDEO|MIPI_DSI_MODE_VIDEO_BURST|MIPI_DSI_MODE_VIDEO_SYNC_PULSE
+ * Reference: drivers/gpu/drm/bridge/sec-dsim.c:441 sec_mipi_dsim_host_attach() */
+static const struct ili9881c_desc ph720128t003_desc = {
+	.init = ph720128t003_init,
+	.init_length = ARRAY_SIZE(ph720128t003_init),
+	.mode = &ph720128t003_default_mode,
+	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
+	.name = "avnet,ph720128t003",
+};
+
+static const struct ili9881c_desc ph720128t005_desc = {
+	.init = ph720128t005_init,
+	.init_length = ARRAY_SIZE(ph720128t005_init),
+	.mode = &ph720128t005_default_mode,
+	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
+	.name = "avnet,ph720128t005",
+};
 
 static const struct ili9881c_desc lhr050h41_desc = {
 	.init = lhr050h41_init,
