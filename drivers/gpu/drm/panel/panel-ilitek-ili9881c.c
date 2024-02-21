@@ -946,6 +946,40 @@ static int ili9881c_unprepare(struct drm_panel *panel)
 	return 0;
 }
 
+static const struct drm_display_mode ph720128t003_default_mode = {
+	.clock		= 66000,
+
+	.hdisplay	= 720,
+	.hsync_start= 720 + 120,
+	.hsync_end	= 720 + 120 + 40,
+	.htotal		= 720 + 120 + 40 + 20,
+
+	.vdisplay	= 1280,
+	.vsync_start= 1280 + 10,
+	.vsync_end	= 1280 + 10 + 2,
+	.vtotal		= 1280 + 10 + 2 + 15,
+
+	.width_mm	= 153,
+	.height_mm	= 90,
+};
+
+static const struct drm_display_mode ph720128t005_default_mode = {
+	.clock		= 66000,
+
+	.hdisplay	= 720,
+	.hsync_start= 720 + 120,
+	.hsync_end	= 720 + 120 + 40,
+	.htotal		= 720 + 120 + 40 + 20,
+
+	.vdisplay	= 1280,
+	.vsync_start= 1280 + 10,
+	.vsync_end	= 1280 + 10 + 2,
+	.vtotal		= 1280 + 10 + 2 + 15,
+
+	.width_mm	= 155,
+	.height_mm	= 87,
+};
+
 static const struct drm_display_mode lhr050h41_default_mode = {
 	.clock		= 62000,
 
